@@ -4,15 +4,6 @@ import ci.microservice.notification.adresseMail.dao.AdresseMailRepository;
 import ci.microservice.notification.adresseMail.models.AdresseMail;
 
 import ci.microservice.notification.job.Runner;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
@@ -21,8 +12,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -56,5 +51,18 @@ public class NotificationApplication {
     @Bean
     public ApplicationRunner runner() {
         return new Runner();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+        //  replace ** with the url of the front-side one deployed on azure
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
