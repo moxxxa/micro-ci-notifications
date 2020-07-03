@@ -53,10 +53,10 @@ public class NotificationApplication implements CommandLineRunner{
         );
     }
 
-    @Bean
-    public ApplicationRunner runner() {
-        return new Runner();
-    }
+//    @Bean
+//    public ApplicationRunner runner() {
+//        return new Runner();
+//    }
 
     @Bean
     public CorsFilter corsFilter() {
